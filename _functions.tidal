@@ -1,0 +1,249 @@
+let 
+  limit p = (|* gain 1.2) $ p
+  lim = limit
+  shift p = (1024 ~>) $ p
+  shift' num p = (num ~>) $ p
+  shiftBy = shift'
+  shiftby = shiftBy
+  shrand num = shiftBy num $ rand
+  ssb = someCyclesBy
+  sb x f p = sometimesBy x f $ p
+  gtfo p = (const $ s "~") $ p 
+  g = gtfo
+  go x p = shiftBy 808226 $ spreadr rot x $ p
+  lng x p = shiftBy 99444 $ spreadr linger x $ p
+  stay = lng
+  one a p = sb a (off (0.0625) id) $ shiftBy 77 $ p
+  oneSlow a p = sb a (off (0.125) id) $ shiftBy 893 $ p
+  oneFast a p = sb a (off (0.0625/2) id) $ shiftBy 8191 $ p
+  roll howOften p = sometimesBy howOften (stutWith 2 (0.0625*3) id) $ shift $ p
+  rollBy nums howOften p = sometimesBy howOften (stutWith nums (0.0625*3) id) $ shift $ p
+  rollSlow howOften p = sometimesBy howOften (stutWith 2 (0.125*3) id) $ shift $ p
+  rollFast howOften p = sometimesBy howOften (stutWith 2 (0.0625*3/2) id) $ shift $ p
+  rip_orig a b p = within (0.25, 0.75) (slow 2 . rev . stut 8 a b) p
+  rip_orig' a b c d e p = within (a, b) (slow 2 . rev . stut c d e) p
+  rip howOften p = ssb howOften (rip_orig 0.5 (0.0625/8)) $ p
+  rip2 howOften p = ssb howOften (rip_orig 0.5 (0.0625/16)) $ p
+  rip3 howOften p = ssb howOften (rip_orig' 0 1 8 0.5 (0.0625/8)) $ p
+  rip4 howOften p = ssb howOften (rip_orig' 0 1 8 0.5 (0.0625/16)) $ p  
+  rep nums p = stutWith nums (0.0625*3) id $ p
+  repSlow nums p = stutWith nums (0.125*3) id $ p
+  crushit p = (# crush (range 2 8 $ slow 1.1 tri)) $ p
+  brakk samps = ((# unit "c") . (# speed "8")) $ s samps # n (irand 30)
+  stdnote = note "-24"
+  rytm = s "rytm"
+  util = s "util"
+  harmor = s "harmor"
+  metalChan = harmor # midichan 0
+  metalsChan = metalChan
+  dudChan= harmor # midichan 2
+  dudsChan = dudChan
+  disChan = harmor # midichan 3
+  rebChan = disChan
+  lime1Chan = harmor # midichan 8
+  lime3Chan = harmor # midichan 6
+  lime2Chan = harmor # midichan 7
+  cantChan = harmor # midichan 4
+  sqChan = harmor # midichan 1
+  pad1 = midichan 0 # stdnote # rytm
+  pad2 = midichan 1 # stdnote # rytm
+  pad3 = midichan 2 # stdnote # rytm
+  pad4 = midichan 3 # stdnote # rytm
+  pad5 = midichan 4 # stdnote # rytm
+  pad6 = midichan 5 # stdnote # rytm
+  pad7 = midichan 6 # stdnote # rytm
+  pad8 = midichan 7 # stdnote # rytm
+  pad9 = midichan 8 # stdnote # rytm
+  pad10 = midichan 9 # stdnote # rytm
+  pad11 = midichan 10 # stdnote # rytm
+  pad12 = midichan 11 # stdnote # rytm
+  dg0 p = shift $ degradeBy 0 $ p
+  dg1 p = shift $ degradeBy 0.1 $ p
+  dg2 p = shift $ degradeBy 0.2 $ p
+  dg3 p = shift $ degradeBy 0.3 $ p
+  dg4 p = shift $ degradeBy 0.4 $ p
+  dg5 p = shift $ degradeBy 0.5 $ p
+  dg6 p = shift $ degradeBy 0.6 $ p
+  dg7 p = shift $ degradeBy 0.7 $ p
+  dg8 p = shift $ degradeBy 0.8 $ p
+  dg9 p = shift $ degradeBy 0.9 $ p
+  discRange a b = (discretise 1 $ range a b $ shrand 10003)
+  discrange = discRange
+  triRange a b c = (range a b $ slow c tri)
+  trirange = triRange
+  cpsDisc a b = (|* cps (discRange a b))
+  cpsRange a b c = (|* cps (triRange a b c))
+  cpsTri = cpsRange
+  randDelay = stack [ slow 2.13 $ ccn 45 # ccv (shiftBy 5544 $ choose [0,127]) -- d
+                      , slow 1.13 $ ccn 46 # ccv (range 0 127 $ shrand 9988) -- dt
+                      , slow 3.1 $ ccn 47 # ccv (range 0 127 $ shrand 19988) ] # rytm
+  normDelay = stack [ ccn 45 # ccv 0, ccn 46 # ccv 0, ccn 47 # ccv 0 ] # rytm
+  scene x = ccv x # ccn 92 # rytm
+  replicator text1 = [putStr (text1) | x <- replicate 500 text1]
+  flood text2 = sequence_(replicator text2)
+  ccvrand min max x = ccv (range min max $ shrand x)
+  ccvholdrand duration min max x = ccv (segment duration $ range min max $ shrand x)
+  ccvrandhold = ccvholdrand
+  filter1 = ccn 1
+  filter2 = ccn 2
+  detune = ccn 3 
+  prism = ccn 4 
+  harmonizer = ccn 5 
+  phwidth = ccn 6 
+  phoff = ccn 7 
+  penv = ccn 8 
+  porta = ccn 9
+  timbre = ccn 10
+  xfade x  = ccv x # ccn 11
+  phspeed = ccn 12 
+  filter1width = ccn 13
+  filter2width = ccn 14
+  filter1env= ccn 15
+  filter2env = ccn 16
+  detune2 = ccn 17
+  tremdepth = ccn 18
+  tremspeed = ccn 19
+  phtype = ccn 20
+  phlevel = ccn 21
+  perf1 x = ccn 35 # ccv x # rytm
+  perf2 x = ccn 36 # ccv x # rytm
+  perf3 x = ccn 37 # ccv x # rytm
+  perf4 x = ccn 39 # ccv x # rytm
+  perf5 x = ccn 40 # ccv x # rytm
+  perf6 x = ccn 41 # ccv x # rytm
+  perf7 x = ccn 42 # ccv x # rytm
+  perf8 x = ccn 43 # ccv x # rytm
+  perf9 x = ccn 44 # ccv x # rytm
+  perf10 x = ccn 45 # ccv x # rytm
+  perf11 x = ccn 46 # ccv x # rytm
+  perf12 x = ccn 47 # ccv x # rytm
+  perf3flip = perf3 (shiftBy 1102 $ choose [0,127])
+  perf4flip = perf4 (shiftBy 1103 $ choose [0,127])
+  perf6rand = perf6 (range 0 127 $ shrand 1104)
+  perf7rand = perf7 (range 0 127 $ shrand 1100)
+  perf8rand = perf8 (range 0 127 $ shrand 1101)
+  perf1rand = perf1 (range 0 127 $ shrand 1202)
+  rytmdist x = s "util" # ccn 2 # ccv x
+  bloop x = s "util" # ccn 3 # ccv x -- byome fx mix
+  rytmmix x = s "util" # ccn 4 # ccv x -- rytm send to master
+  byomemix = ccn 1
+  byomemixchan = midichan 3
+  byomeon = s "util" # byomemixchan # byomemix # ccv 100
+  byomeoff = s "util" # byomemixchan # byomemix # ccv 0
+  randgain min max p = (|* gain (range min max $ shiftBy 733663 $ rand)) $ shift $ p
+  randGain = randgain
+  rytmfilterfreq = ccn 74
+  rytmfilterdecay = ccn 71
+  rytmfilterenv = ccn 77
+  rytmnoisedecay = ccn 18
+  noisedecay = rytmnoisedecay
+  trip p = stutWith 
+                    (shiftBy 83 $ choose [8,16,4,12,6]) 
+                    (shiftby 489 $ choose [0.125,0.0625,0.25, 0.0625*3, 0.125*3]) (|* gain 0.9) $ p
+  mapp mapping p = ( unwrap $ fmap (mapping!!) $ p) 
+  mapp' mapping p = ( fmap (mapping!!) $ p) 
+  hat1 = fast 2 $ struct (ascii "<z e s g e g k e>") $ pad11
+  hat2 = struct "1(<10 7 13>,16,<0 7>)" $ pad11
+  ghost x p = off (0.0625) x $ p
+  grainmix x = ccn 1 # ccv x # s "util"
+  stutmix x = ccn 2 # ccv x # s "util"
+  stutl x = ccn 3 # ccv x # s "util"
+  stutr x = ccn 4 # ccv x # s "util"
+  grsize x = ccn 5 # ccv x # s "util"
+  grspeed x = ccn 6 # ccv x # s "util"
+  grrate x = ccn 7 # ccv x # s "util"
+  srate x = ccn 8 # ccv x # s "util"
+  insanityCore grainmixarray stutmixarray sampleRateFreq rldiff = slow 1.5 $ stack [
+              fast 2.1 $ grainmix (shiftBy 55 $ choose grainmixarray)
+              , fast 2.5 $ stutmix (shiftBy 33 $ choose stutmixarray)
+              , fast 2.325 $ stutl (range 20 100 $ shrand 100)
+              , (rldiff ~>) $ fast 2.325 $ stutr (range 20 100 $ shrand 100)
+              , fast 1.9 $ grsize (range 0 127 $ shrand 101)
+              , fast 2.9 $ grspeed (range 0 127 $ shrand 102)
+              , fast 1.23 $ grrate (range 0 127 $ shrand 103)
+              , ssb sampleRateFreq (# ccv (range 10 127 $ shrand 104)) $ fast 1.7 $ srate 127
+            ] # s "util"
+  insane = insanityCore [0,0,0,127] [0,0,0,127] 0.3 0
+  twiceInsane = insanityCore [0,0,0,127] [0,0,0,127] 0.3 10
+  insaneAgain = twiceInsane
+  veryInsane = insanityCore [127] [127] 0.4 10
+  quiteInsane = veryInsane
+  mental = insane
+  mental2 = twiceInsane 
+  mentalTwice = twiceInsane 
+  veryMental = veryInsane 
+  quiteMental = veryMental
+  sane = stack [ grainmix 0, stutmix 0, srate 127]
+  metal = slow "<10 8 6>"
+                    $ stack [
+                      superimpose (fast "<5 6 7>")
+                        $ pan 1 # note (scale "ritusen" (shiftBy 33 $ choose [-16,-15..2])) # legato 1
+                        # octave "<3 4 4 2>"
+                      , filter1 # ccvrand 0 120 101
+                      , penv # ccvrand 0 127 102
+                      , porta # ccvrand 0 64 103
+                      , phwidth # ccvrand 0 20 104
+                      , phoff # ccvrand 0 127 105
+                      , prism # ccvrand 0 127 106
+                      , detune # ccvrand 0 127 107
+                      , timbre # ccvrand 0 127 108
+                    ] # metalChan # legato 1
+  duds = slow 12 $ stack [
+        note "<-12 -24 -16>" # legato 1
+        , fast 1.2 $ filter1 # ccvrand 0 127 101
+        , fast 1.3 $ filter2 # ccvrand 0 127 102
+        , fast 1.4 $ phoff # ccvrand 0 127 103
+        , fast 1.6 $ phwidth # ccvrand 0 127 104
+        , fast 1.5 $ phspeed # ccvrand 0 127 105
+        , fast 1.7 $ prism # ccvrand 0 127 106
+        , fast 1.8 $ harmonizer # ccvrand 0 127 107
+        , fast 1.15 $ detune # ccvrand 0 127 1100
+        , fast 1.1 $ detune2 # ccvrand 0 10 108
+        , fast 1.25 $ timbre # ccvrand 0 127 109
+        , fast 1.35 $ penv # ccvrand 0 127 110
+        , fast 1.45 $ filter1width # ccvrand 0 127 111
+        , fast 1.55 $ filter2width # ccvrand 0 127 112
+      ] # dudChan # legato 1
+  sqatk = ccn 100
+  sqdec = ccn 101
+  sqsus = ccn 102
+  sqrel = ccn 103
+  sqccs = slow "<4 3 5 2 6>" $ stack [
+          filter1 # ccv (range 0 127 $ shrand 101)
+        , filter1width # ccv (range 64 127 $ shrand 108)
+        , filter2 # ccv (range 0 127 $ shrand 102)
+        , filter2width # ccv (range 64 127 $ shrand 109)
+        , detune # ccv (range 0 127 $ shrand 103)
+        , sqatk # ccv (range 20 127 $ shrand 104)
+        , sqdec # ccv (range 0 127 $ shrand 105)
+        , sqsus # ccv (range 0 127 $ shrand 106)
+        , sqrel # ccv (range 0 127 $ shrand 107)
+        , prism # ccv (shiftBy 4 $ choose [0,64,127])
+        , timbre # ccv (shiftBy 55 $ choose [0,127])
+        , penv # ccv (shiftBy 3 $ choose [64,127])
+        , phoff # ccv (range 0 127 $ shrand 200)
+        , phwidth # ccv (range 0 20 $ shrand 201)
+        , phspeed # ccv (range 0 127 $ shrand 202)
+      ] # sqChan
+  blutccs = stack [
+          filter1 # ccv (range 55 110 $ slow 18 $ sine)
+          , filter2 # ccv (range 55 110 $ slow 17.23 sine)
+          , prism # ccv (range 5 100 $ slow 17.1 $ sine)
+          , filter1env # ccv (range 127 127 $ slow 16.1 $ tri)
+          , phoff # ccv 0
+          , phwidth # ccv (range 0 15 $ slow 15.3 tri)
+          , detune # ccv (range 0 127 $ slow 15.87 tri)
+          , phtype # ccv (range 0 127 $ slow 14.523 rand)
+          , ccn 100 # ccv (range 0 127 $ slow 14.12 tri) 
+          , ccn 101 # ccv (range 0 127 $ slow 13.83 tri) 
+          , ccn 102 # ccv (range 0 127 $ slow 13.444 tri) 
+          , ccn 103 # ccv (range 0 127 $ slow 18.8983 tri) 
+          , slow 5 $ penv # ccv (shiftBy 3882892 $ choose [0,64,127,127])
+        ] # newBlutChan
+  blutcc = blutccs
+  rytmmap mapping pattern = midichan (mapp mapping $ pattern) # rytm 
+  rytmmap' mapping pattern = midichan (mapp' mapping $ pattern) # rytm 
+  xfademap mapping pattern = xfade (mapp mapping $ pattern)
+  notemap mapping pattern = note (mapp mapping $ pattern)
+
+

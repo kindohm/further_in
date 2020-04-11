@@ -1,0 +1,30 @@
+bps (180/120)
+
+do
+    let drumpat1 = limit $ midichan "{0 0 0 3 3}%8" # rytm # note "c3"
+        dis p = segment (1/4) $ p
+        domove p = id $ p        
+        fill p = domove $ degradeBy 0.3 $ shift $ p
+        min = 0.25
+        max = 1.5
+    p "rytm" 
+        $ fill $ drumpat1 # cps (dis $ (180/120/2) * (range min max $ shrand 100))
+    p "synth" 
+        $ fill $ (|* gain 1.15) $ gain "{1 1 1 0.4 0.4 }%8" # note "-6" # lime6Chan
+    p "ccs" 
+        $ fill $ gain "{1 1 1 1 1}%8" # stack [ 
+          slow 4 $ filter1 # ccv (range 0 127 $ shiftBy 300 rand) 
+          , slow 4 $ filter2 # ccv (range 0 127 $ shiftBy 301 rand) 
+          , slow 4 $ detune # ccv (range 10 64 $ shiftBy 302 rand) 
+          , slow 4 $ prism # ccv (range 0 127 $ shiftBy 303 rand) 
+          , slow 4 $ phlevel # ccv (shift' 304 $ choose [0,127]) 
+          , slow 4 $ phwidth # ccv (range 0 127 $ shiftBy 305 rand) 
+          , slow 4 $ phoff # ccv (range 0 127 $ shiftBy 306 rand) 
+          , slow 4 $ phtype # ccv (range 0 127 $ shiftBy 307 rand) 
+          , slow 4 $ timbre # ccv (range 0 127 $ shiftBy 308 rand)
+            ] # lime6Chan
+
+d1 $ fast 6 $ timbre # ccv (range 0 127 $ shrand 100) # lime6Chan
+
+
+hush

@@ -1,0 +1,39 @@
+do
+  let dis p = slow 4 $ p
+      vary = 0.4
+      accentGain = 0.4
+      speeds = slow (discretise 1 $ choose [1,1]) 
+                  $ degradeBy 0.6 $ shift $ gain (randcat( 
+                  (replicate 5 "1*1") 
+                  ++ (replicate 5 "1*2") 
+                  ++ (replicate 5 "1*3") 
+                  ++ (replicate 5 "1*4") 
+                  ++ (replicate 10 "1*5") 
+                  ++ (replicate 10 "1*6") 
+                  ++ (replicate 7 "1*7") 
+                  ++ (replicate 8 "1*8") 
+                  ++ (replicate 10 "1*10") 
+                  ++ (replicate 10 "1*12") 
+                  ++ (replicate 10 "1*14") 
+                  ++ (replicate 10 "1*16") 
+                  ++ (replicate 10 "1*18") 
+                  ++ (replicate 10 "1*20") 
+              ))
+  p "drumsx" $ gtfo $ (|* gain 1.1) $ sometimesBy vary (# n 3) $ shift $ speeds # n 2 # s "limekit" # cut 1
+  p "rytm" $ limit $ sometimesBy vary (# pad4) $ shift $ speeds # pad1 # rytm
+  p "synth" $ (|* gain 1.2) $ stack [ 
+      sometimesBy vary (# gain accentGain) $ shift $ speeds # note (slow 4 $ "<-6 -12>")
+    , sometimesBy vary (# ccv 127) $ shift $ speeds # ccv 0 # ccn 100
+    , slow 4 $ speeds # ccn 1 # ccv (dis $ range 0 127 $ shift' 300 rand) 
+    , slow 4 $ speeds # ccn 2 # ccv (dis $ range 0 127 $ shift' 301 rand) 
+    , slow 4 $ speeds # ccn 3 # ccv (dis $ range 0 127 $ shift' 302 rand) 
+    , slow 4 $ speeds # ccn 4 # ccv (dis $ range 0 127 $ shift' 303 rand) 
+    , slow 4 $ speeds # ccn 5 # ccv (dis $ range 0 64 $ shift' 305 rand) 
+    , slow 4 $ speeds # ccn 6 # ccv (dis $ range 0 127 $ shift' 306 rand) 
+    , slow 4 $ speeds # ccn 7 # ccv (dis $ range 0 127 $ shift' 307 rand) 
+    ] 
+    # lime2Chan # cps (160/120/2)
+
+hush
+
+d1 $ fast 4 $ gain 1 # ccv (range 0 127 $ slow 234 rand) # ccn 100 # lime2Chan
