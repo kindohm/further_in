@@ -24,20 +24,49 @@ do
       plyFunc = (|* gain 0.95)
       freq = 0.3
       revFreq = 0.2
-  d1  
+  p "rytm"
     $ limit
     $ ssb revFreq rev
     $ stack [
+      -- main
       ssb freq (plyWith plies plyFunc )
         $ pan 1 # midichan chanPat # note "c3" # rytm
+      -- ch
       , ssb freq (const $ plyWith plies (plyFunc . (# pad11)) $ pad12) $ pad11 # rytm
+      -- noise
       , slow 5 $ pad8 # rytm
+      -- sd
+      , slow 4 $ (0.125 ~>) $ (0.5 ~>) $ pad2
       , perf3 "<0 0 0 127>"
       , perf4 "<0 0 0 0 127>"
-      , slow 4 $ (0.125 ~>) $ (0.5 ~>) $ pad2
-      , randcat [randDelay, normDelay, randDelay, normDelay]
+      , randcat [normDelay]
       , slow 4 $ scene "<0 1 2>"
+      -- stab
+      , gtfo $ dg1 $ slow "<3.1 2.8 4.24>" 
+        $ (|+ note "-24")
+        $ note (scale "minor" "{0}%1") 
+        # midichan 0 # rytm
     ] # cps cpsPat
-  d2 $ limit $ duds
+  p "harmor" $ limit $ duds
+
+
+           haha no idea. wut.
+
+
+hush
+
+d1 $ pidgeon # cps (150/120/2)
+
+
+
+
+hush
+
+d1 $ pidgeon # cps (160/120/2)
+
+p "harmor" silence
+
+
+d1 silence
 
   hush

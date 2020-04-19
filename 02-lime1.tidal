@@ -13,7 +13,7 @@ let spat = "[1.1 ~ ~ ~ ~ ~ 0.4 ~ ~ ~]"
     mod p = id $ p -- spaceOut [1,1.1,0.9,0.95,1.7,1.25,0.8,1.65,1,0.7,0.823,1.5,1,2,1.8] $ p        
     mod2 p = (|* cps 0.5) $ (|* cps "<1 1.1 0.9 0.95 1.7 1.25 0.8 1.65 1 0.7 0.823 1.5 1 2 1.8>") $ p
     drums = mod $ n dpat # s "limekit" # gain gpat # cps (140/120/2)
-    drumsmidi = limit $ mod $ midichan mpat # rytm # note "c3"
+    drumsmidi = limit $ mod $ midichan mpat # rytm # note "c3" # cps (140/120/2)
     lime1_synth_core xPat yPat zPat phPat bit = stack [
                 mod
                     $ gain (every bit (const $ spat2) $ spat )
@@ -27,16 +27,21 @@ let spat = "[1.1 ~ ~ ~ ~ ~ 0.4 ~ ~ ~]"
             # lime1Chan
     lime1_synth_intro zPat phPat bit = lime1_synth_core 64 64 zPat phPat bit
     lime1_synth zPat phPat bit = lime1_synth_core (range 0 127 $ shrand 101) (range 0 127 $ shrand 102) zPat phPat bit
-                          
+
+
+-- hey. 
+
+hush
+
+I LIKE THIS SONG
+
 do 
   let detune = 0
       ph = 0
       bit = 0
-  d1 
+  p "lime1" 
     $ mod2 
     $ stack [ drumsmidi, lime1_synth detune ph bit ]
 
-
-d1 $ fast 8 $ gain 1 # ccn 100 # ccv (range 0 127 rand) # lime1Chan
-
-hush
+    hush
+d1 $ nerd # cps (140/120/2)

@@ -123,6 +123,7 @@ let
   perf7rand = perf7 (range 0 127 $ shrand 1100)
   perf8rand = perf8 (range 0 127 $ shrand 1101)
   perf1rand = perf1 (range 0 127 $ shrand 1202)
+  perf4rand = perf4 (range 0 127 $ shrand 12099)
   rytmdist x = s "util" # ccn 2 # ccv x
   bloop x = s "util" # ccn 3 # ccv x -- byome fx mix
   rytmmix x = s "util" # ccn 4 # ccv x -- rytm send to master
@@ -225,25 +226,52 @@ let
         , phwidth # ccv (range 0 20 $ shrand 201)
         , phspeed # ccv (range 0 127 $ shrand 202)
       ] # sqChan
-  blutccs = stack [
-          filter1 # ccv (range 55 110 $ slow 18 $ sine)
-          , filter2 # ccv (range 55 110 $ slow 17.23 sine)
-          , prism # ccv (range 5 100 $ slow 17.1 $ sine)
-          , filter1env # ccv (range 127 127 $ slow 16.1 $ tri)
-          , phoff # ccv 0
-          , phwidth # ccv (range 0 15 $ slow 15.3 tri)
-          , detune # ccv (range 0 127 $ slow 15.87 tri)
-          , phtype # ccv (range 0 127 $ slow 14.523 rand)
-          , ccn 100 # ccv (range 0 127 $ slow 14.12 tri) 
-          , ccn 101 # ccv (range 0 127 $ slow 13.83 tri) 
-          , ccn 102 # ccv (range 0 127 $ slow 13.444 tri) 
-          , ccn 103 # ccv (range 0 127 $ slow 18.8983 tri) 
-          , slow 5 $ penv # ccv (shiftBy 3882892 $ choose [0,64,127,127])
-        ] # newBlutChan
-  blutcc = blutccs
   rytmmap mapping pattern = midichan (mapp mapping $ pattern) # rytm 
   rytmmap' mapping pattern = midichan (mapp' mapping $ pattern) # rytm 
   xfademap mapping pattern = xfade (mapp mapping $ pattern)
   notemap mapping pattern = note (mapp mapping $ pattern)
+  notemap' mapping pattern = note (mapp' mapping $ pattern)
+  tuna = limit $ chop 16 $ loopAt 16 $ gain 1 # s "<tuna>" # lpf 2000 # hpf 100
+  pidgeon = limit $ chop 16 $ loopAt 16 $ gain 1 # s "<pidgeon>" # lpf 2000 # hpf 100
+  tripp = limit $ chop 16 $ loopAt 16 $ gain 1 # s "<trip>" # lpf 2000 # hpf 100
+  tunapidgeontrip = limit $ chop 16 $ loopAt 16 $ gain 1 # s "<tuna pidgeon trip>" # lpf 2000 # hpf 100
+  cortini = limit $ jux (100 ~>) $ superimpose (# pan (rand)) $ superimpose (|* speed 1.1) $ every 3 rev $ chop 64 $ loopAt 7 $ s "cortini" # lpf 2000 # speed 1 # hpf 200
+  moose = every 3 (jux (slow 3 . (11 ~>)))
+            $ superimpose ((# pan rand) . (# hpf 1000))
+            $ s "moose" 
+            # legato 1 
+            # lpf (range 1000 4000 $ slow 33 rand)
+            # shape 0.5
+  sawin = limit 
+            $ superimpose ((10 ~>) . (|* speed 1.1) . (# pan rand))
+            $ sb 0.5 (|* speed "-1")
+            $ shift
+            $ chop 20 $ loopAt 20 $ gain 1 # s "<sawin>" # lpf 6000 # hpf 100 # shape 0.3
+  scratch = limit 
+            $ superimpose (rev . (# speed 0.5) . (11 ~>) . (# pan rand))
+            $ shift
+            $ (# crush (range 3 7 $ slow 10 tri)) 
+            $ chop 16 $ loopAt 16 
+            $ gain 1 
+            # s "<scratch>" # lpf 2000 # hpf 100
+            # shape 0.2
+  slither = limit 
+            $ superimpose ((# pan rand) . (10 ~>) . (# hpf (range 100 2000 $ slow 3434 rand)))
+            $ chop 32
+            $ loopAt 32
+            $ s "slither" 
+            # lpf 2000 
+            # hpf 100 
+            # shape 0.3
+  nerd = s "nerd*2" 
+            # n 11
+            # bpf (range 300 2000 $ slow 20.234 tri) 
+            # speed "[0.9,0.925,0.85,0.8,1]"
+            # legato 2.5
+
+
+d1 $ nerd # cps (range 0.333 1.5 $ slow 10 tri)
+
+  hush
 
 

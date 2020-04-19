@@ -20,10 +20,12 @@ let metal = slow "<10 8 6>"
               $ struct (binaryN 16 "<283494 14034 124781 234923>") 
               $ rytm  # note "c3"
 
+d1 silence
+
 
 do
-  let pat = "{0@6 0@6 0@6 1@11 1 0@10 0@12 0 0 0 1@6}%16"
-      mod p = dg0 $ whenmod 20 17 (iter 8) $ every 2 rev $ foldEvery [3,4] (3.5 ~>) $ p 
+  let pat = "{0@6 0@6 0@6 1@11 1 0@10 0@12 0 0 1@6 0 0 0 0}%16"
+      mod p = whenmod 20 17 (iter 8) $ every 2 rev $ whenmod 10 5 (foldEvery [2,3] (0.25 ~>)) $ p 
   p "harmor"
     $ limit
     $ mod
@@ -34,20 +36,35 @@ do
   p "rytm"
     $ limit 
     $ mod
+    $ g
     $ stack [
-      one 0.2 $ rytmmap [2,3] pat # note "c3" # gain (range 0.8 1 $ shrand 3366)
-      , dg5 $ struct (binaryN 16 "<28394>") $ pad11
-      , dg0 $ perc1
-      , fast 1.75 $ perf3flip
-      -- both clap mods:
+      -- main
+      g $ one 0.2 $ rytmmap [2,3] pat # note "c3" # gain (range 0.8 1 $ shrand 3366)
+      -- ch
+      , g $ dg3 $ struct (binaryN 16 "<28394>") $ pad11
+      -- perc
+      , g $ dg1 $ perc1
+      -- sd
+      , g $ roll 0.333 $ (0.5 ~>) $ dg2 $ pad2
+      -- saw
+      , gtfo $ ((0.0625*3) ~>) 
+        $ slow 2 
+        $ (|+ note (shiftBy 99 $ choose [0,12])) $ (# note "<g3 c3>") $ pad1
+      , fast 2.75 $ perf3flip
+      -- clap mods:
       , perf4flip
       , fast 4 $ perf1 (range 0 64 $ slow 10 rand)
-      , ((0.0625*3) ~>) $ slow 2 $ (|+ note (shiftBy 99 $ choose [0,12])) $ (# note "<g3 c3>") $ pad1
-      , rollSlow 0.4 $ roll 0.4 $ (0.5 ~>) $ dg2 $ pad2
-      , slow 1.25 $ scene "<0>"
-      -- no rand delay !
+      , slow 1.25 $ scene "<0 1 2>"
+      -- no rnddel !
     ] 
     # rytm # cps (160/120/2)
+
+p "harmor" silence
+
+hush
+
+d1 $ cortini # cps (140/120/2)
+
 
 
 hush

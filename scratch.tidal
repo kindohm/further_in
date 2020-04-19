@@ -1,92 +1,26 @@
 
-
-
-
-
-d1 
-  $ struct "1*8 1 ~ ~" $ (|+ note "-24") 
-  $ note (scale "ritusen" (fast 4 $ (1 ~>) $ every 2 (+8) $ run 8)) # s "rytm" # midichan 0 # cps 0.4 # gain 1.2
-
-  hush
-
-  d1 
-    $ s "arpish" # legato 1 # lpf 2000 # hpf 100 # gain 1.2
-
-  d1 
-    $ stack [
-      spreadr slow [1,1.5,1.25,2,2.5,3]
-        $ gain (fast 4 $ randcat ["1*8", "1*12", "1*16", "1*32", "1*24"]) 
-        # n (segment (4) $ irand 10) # s "fur1" # cps (160/120/2) # legato 1
-      , s "arpish" # gain 1.2 ]
-
-  hush
+let wchoose2 values weights = choose $ concatMap (\x -> replicate (fst x) (snd x)) (zip weights values) 
 
 do 
-  let pat = "{0@3 0@3 0@3 0 0 1@10 1 0@3 0@14 0 0 0}%16"
-  d1 
-    $ dg4
+  let pat = "{0@7 0@3 1@4  0@6 0@5 0 1@5 0 0@3}%16"
+  p "stuff"
+    $ every 2 rev
+    $ limit
     $ stack [
-      g $ sb 0.2 (stutWith 2 (0.0625*3) (|+ note 12))
-      $ shiftBy 33 
-      $ (|+ note "[-24 -36 -42]*3") 
-      $ slow 2 
-      $ gain "1(3,8,<0 3 4>)" 
-      # note (scale "minor" "{0 -2 -4 2 -6 1 2}%8")
-      , every 2 rev 
-        $ midichan (mapp [2,3,5] pat) # note "c3"
-      , sb 0.08 (# pad12) $ midichan (mapp [10,10,10] pat) # note "c3"
-      , fast 2.43 $ perf4flip, fast 2.9 $ perf3flip ] # s "rytm" # cps (160/120/2)
+      rytmmap [2,3] pat # note "c3"
+      , sb 0.1 (# pad12) 
+        $ (# gain 0.8) 
+        $ dg3
+        $ struct (binaryN 16 "<2389423 2384223 103482394>") $ pad11
+      , fast 3 $ perf3flip
+      , fast 3.5 $ perf4rand
+      , stack [
+          notemap [0, "~"] pat ]
+        # s "harmor"
+      , fast 1.5 $ scene "<0 1 2>"
+      , randcat [normDelay]
+    ]
 
-d1 $ dg4 $ spreadr fast [1,1.2,1.4,1.6,2,2.5,3,4] $ struct "1(3,8,<0 5 3>)" $ pad3
+    hush
 
-
-
-let repp x = (replicate x (fast x $ "1" :: Pattern Double))
-
-d1 $ gain (randcat (   ))
-
-d1 $ cpsTri 0.5 1 3 $ cpsDisc 0.5 1 
-  $ gain (ssb 0.1 (const $ "~") $ randcat  (
-                  (replicate 1 "1*1") 
-                  ++ (replicate 2 "1*2") 
-                  ++ (replicate 3 "1*3") 
-                  ++ (replicate 4 "1*4") 
-                  ++ (replicate 5 "1*5") 
-                  ++ (replicate 6 "1*6") 
-                  ++ (replicate 7 "1*7") 
-                  ++ (replicate 8 "1*8") 
-                  ++ (replicate 10 (fast 10 $ "1")) 
-                  ++ (replicate 12 "1*12") 
-                  ++ (replicate 14 "1*14") 
-                  ++ (replicate 16 "1*16") 
-                  ++ (replicate 18 "1*18") 
-                  ++ (replicate 20 "1*20") )) # pad3 # cps 1
-
-
-
-d1 
-  $ cpsTri 0.5 1.25 3
-  $ cpsDisc 0.25 1.5
-  $ (# cps "<5 2 3 2 1>") 
-  $ plyWith "<5 10 15>" (# gain 0.8) $ pad3
-
-
-d1 
-  $ spreadr degradeBy [0.1,0.2,0.3,0.4,0.5,0.6,0.7] 
-  $ shift
-  $ gain "1.1*16" 
-  # midichan (shiftBy 234 $ choose [0,1,2,2,2,3,4,5,10]) # s "rytm" # note "c3" # legato 1
-
-p "del" $ randcat [randDelay, normDelay]
-
-
-
-d1 
-  $ stack [
-    jux (|* speed 1.1) 
-      $ spreadr slow [1,1.2,1.4,1.6,1.8,2] 
-      $ s "legal" # n 1 # begin (range 0 0.5 $ shrand 8293) # legato 1
-    , randcat [mental2, mental, quiteMental] 
-  ]
-
-hush
+d1 $ cortini

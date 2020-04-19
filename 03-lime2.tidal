@@ -1,8 +1,29 @@
+
+
+
+
+
+
+
+
+
+
+
+
+d1 silence
+
+
+hush
+
+d1 $ slither
+
+hey daniel remember replicate?
+
 do
   let dis p = slow 4 $ p
-      vary = 0.4
+      vary = "<0.3 0.4>"
       accentGain = 0.4
-      speeds = slow (discretise 1 $ choose [1,1]) 
+      speeds = slow (discretise 1 $ choose [1,2]) 
                   $ degradeBy 0.6 $ shift $ gain (randcat( 
                   (replicate 5 "1*1") 
                   ++ (replicate 5 "1*2") 
@@ -19,7 +40,6 @@ do
                   ++ (replicate 10 "1*18") 
                   ++ (replicate 10 "1*20") 
               ))
-  p "drumsx" $ gtfo $ (|* gain 1.1) $ sometimesBy vary (# n 3) $ shift $ speeds # n 2 # s "limekit" # cut 1
   p "rytm" $ limit $ sometimesBy vary (# pad4) $ shift $ speeds # pad1 # rytm
   p "synth" $ (|* gain 1.2) $ stack [ 
       sometimesBy vary (# gain accentGain) $ shift $ speeds # note (slow 4 $ "<-6 -12>")
@@ -34,6 +54,19 @@ do
     ] 
     # lime2Chan # cps (160/120/2)
 
+
 hush
 
-d1 $ fast 4 $ gain 1 # ccv (range 0 127 $ slow 234 rand) # ccn 100 # lime2Chan
+d1 $ slither
+
+
+hush
+
+d1 $ slither 
+
+p "rytm" silence 
+p "synth" silence
+
+
+d1 $ slither
+

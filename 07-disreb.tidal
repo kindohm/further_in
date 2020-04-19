@@ -1,3 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 setcps (150/120/2)
 
 hush
@@ -5,12 +24,15 @@ hush
 d3 silence
 
 do
-  let pat  = "{1       ~ ~ 1 ~ 1 ~ ~ }%16"
-      vpat = "{[0 1]/2 ~ ~ 1 ~ 1 ~ ~ }%16"
-      cpp  = "{1       ~ ~ ~ ~ ~ ~ ~ }%16"
-      degr = 0
+  let pat  = "{1       ~ ~ 1 ~ 1 ~ 1 ~ 1 ~ 1 ~ ~ }%16"
+      vpat = "{[0 1]/2 ~ ~ 1 ~ 1 ~ 1 ~ 1 ~ 1 ~ ~ }%16"
+      cpp  = "{1       ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~}%16"
+      degr = 0.5
+      mod p = id $ p
   p "drums"
+    $ mod
     $ limit 
+    $ degradeBy degr
     $ stack [
       gain (pat) # midinote 0 # cut 1011,
       slow 2 $ gain cpp # midinote 3 # cut 101,
@@ -18,8 +40,9 @@ do
       ((0.0625) <~) $ gain pat 
         # midinote 5]
         # rytm
-        # cps (150/120/2)
+        # cps (40/120/2)
   p "synth"
+    $ mod
     $ (|* gain 1.2)
     $ degradeBy degr $ pan pat 
       # note "[0,2,4]" 
@@ -33,14 +56,18 @@ do
       gain pat # ccv (range 0 127 $ slow 28 tri) # ccn 5
     ] 
     # rebChan
+  d1 $ rip 0.6 $ randcat [brakk "funky*8", brakk "fur1*8" ] # gain 1.1
 
 
-d1 $ fast 8 $ gain 1 # phoff # ccv (range 0 127 $ slow 3 rand) # rebChan
+         thank you!
 
-hush
-
-d1 $ fast 4 $ gain 1 # ccv (range 0 127 $ slow 234 rand) # ccn 5 # rebChan
+         hush
 
 
 
-        hush
+
+
+
+
+
+
